@@ -1,6 +1,6 @@
 #include "grib_file_handler.h"
 
-using namespace nuwe_pyeccodes;
+using namespace pyeccodes;
 
 GribFileHandler::GribFileHandler() 
 {
@@ -13,7 +13,7 @@ void GribFileHandler::openFile(const std::string & file_path)
 
 }
 
-void nuwe_pyeccodes::GribFileHandler::closeFile()
+void pyeccodes::GribFileHandler::closeFile()
 {
 	if (grib_handle_) {
 		codes_handle_delete(grib_handle_);
@@ -25,12 +25,13 @@ void nuwe_pyeccodes::GribFileHandler::closeFile()
 	}
 }
 
-std::unique_ptr<GribMessageHandler> nuwe_pyeccodes::GribFileHandler::next()
+std::unique_ptr<GribMessageHandler> pyeccodes::GribFileHandler::next()
 {
 	int error = 0;
 	grib_handle_ = codes_grib_handle_new_from_file(nullptr, grib_file_, &error);
 	if (grib_handle_) {
-		auto message_handler = std::make_unique<GribMessageHandler>(grib_handle_);
+		auto message_handler = std::make_unique<GribMessageHandler>();
+		message_handler->setHandle(grib_handle_);
 		return message_handler;
 	} else {
 		return std::unique_ptr<GribMessageHandler>();

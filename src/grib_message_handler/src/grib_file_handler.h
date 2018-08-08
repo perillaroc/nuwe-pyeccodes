@@ -7,7 +7,7 @@
 #include "grib_message_handler.h"
 
 
-namespace nuwe_pyeccodes {
+namespace pyeccodes {
 
 class GribFileHandler 
 {

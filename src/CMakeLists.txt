@@ -1,1 +1,2 @@
 add_subdirectory(grib_message_handler)
+add_subdirectory(pyeccodes)

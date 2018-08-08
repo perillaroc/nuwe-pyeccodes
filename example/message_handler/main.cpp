@@ -5,7 +5,7 @@
 #include <grib_message_handler.h>
 #include <grib_file_handler.h>
 
-using namespace nuwe_pyeccodes;
+using namespace pyeccodes;
 using namespace std;
 
 int main() {
@@ -17,6 +17,8 @@ int main() {
 	std::unique_ptr<GribMessageHandler> h;
 	while (h = file_handler->next()) {
 		std::cout << h->getString("shortName") << std::endl;
+		std::cout << h->getLong("Ni") << std::endl;
+		std::cout << h->getDouble("level") << std::endl;
 	}
 
 	file_handler->closeFile();
