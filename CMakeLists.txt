@@ -5,6 +5,9 @@ project(nuwe-pyeccodes)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
+set(NUWE_DATA_ROOT ${PROJECT_SOURCE_DIR}/data)
+
 find_package(EcCodes REQUIRED)
 
 add_subdirectory(src)
+add_subdirectory(example)
