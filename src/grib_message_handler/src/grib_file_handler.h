@@ -13,6 +13,7 @@ class GribFileHandler
 {
 public:
 	GribFileHandler();
+	~GribFileHandler();
 
 	void openFile(const std::string &file_path);
 	void closeFile();
