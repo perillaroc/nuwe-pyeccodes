@@ -1,9 +1,10 @@
 # nuwe-pyeccodes
 
-A python binding for ecCodes for python 3 in Windows.
+A python binding for ecCodes for python in Windows.
 
 ecCodes by ECMWF has its own python binding which only supports python 2 and is not available on Windows.
-`nuwe-pyeccodes` provides some simple methods to process GRIB2 data based on ecCodes.
+
+`nuwe-pyeccodes` provides some simple methods to process GRIB2 data based on ecCodes and supports both python 2 and python 3.
 
 
 ## Requirments
@@ -16,7 +17,7 @@ Use OpenJPEG as the JPEG decoder on Windows.
 
 ### pybind11 and python
 
-Choose a python distribution (official Python or Anaconda Python).
+Choose a python distribution (official Python or Anaconda Python) and install `pybind11` package.
 
 Download the latest pybind11 and build with CMake.
 
