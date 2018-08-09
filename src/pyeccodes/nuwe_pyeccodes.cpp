@@ -12,6 +12,8 @@ using namespace pyeccodes;
 PYBIND11_MODULE(nuwe_pyeccodes, m) {
 	py::class_<GribMessageHandler>(m, "GribMessageHandler")
 		.def(py::init<>())
+		.def("getDize", &GribMessageHandler::getSize)
+		.def("getLength", &GribMessageHandler::getLength)
 		.def("getString", &GribMessageHandler::getString)
 		.def("getLong", &GribMessageHandler::getLong)
 		.def("getDouble", &GribMessageHandler::getDouble)

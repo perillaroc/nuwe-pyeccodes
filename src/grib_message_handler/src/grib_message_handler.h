@@ -16,6 +16,8 @@ public:
 	std::string getString(const std::string &key);
 	long getLong(const std::string &key);
 	double getDouble(const std::string &key);
+	size_t getSize(const std::string &key);
+	size_t getLength(const std::string &key);
 
 	std::vector<double> getDoubleArray(const std::string &key);
 
