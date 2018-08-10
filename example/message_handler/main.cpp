@@ -23,6 +23,9 @@ int main() {
 		std::cout << h->getLength("typeOfLevel") << std::endl;
 		auto values = h->getDoubleArray("values");
 		std::cout << values.size() << ": index 0: " << values[0] << std::endl;
+
+		h->setString("shortName", "u");
+		std::cout << h->getString("shortName") << std::endl;
 	}
 
 	file_handler->closeFile();
