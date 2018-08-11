@@ -7,7 +7,6 @@ configure_file (
     "${PROJECT_BINARY_DIR}/example_config.h"
 )
 
-
 add_executable(example_message_handler main.cpp)
 
 target_link_libraries(example_message_handler PUBLIC
