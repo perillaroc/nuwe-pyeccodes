@@ -3,12 +3,13 @@ from setuptools import setup, find_packages
 setup(
     name="nuwe_pyeccodes",
     version="0.1.0",
-    packages=['nuwe_eccodes'],
 	install_requires=['numpy'],
+	include_package_data=True,
+	packages=["nuwe_pyeccodes"],
 	package_data={
-		'nuwe_eccodes': [
-			'@PROJECT_BINARY_DIR@/*.lib',
-			'@PROJECT_BINARY_DIR@/*.pyd',
+		'': [
+			'*.lib',
+			'*.pyd',
 		]
 	}
 )

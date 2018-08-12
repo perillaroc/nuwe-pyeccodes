@@ -9,7 +9,7 @@
 namespace py = pybind11;
 using namespace pyeccodes;
 
-PYBIND11_MODULE(nuwe_pyeccodes, m) {
+PYBIND11_MODULE(_pyeccodes, m) {
 	py::class_<GribMessageHandler>(m, "GribMessageHandler")
 		.def(py::init<>())
 		.def("getSize", &GribMessageHandler::getSize)

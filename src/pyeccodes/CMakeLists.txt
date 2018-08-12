@@ -1,20 +1,26 @@
-project(pyeccodes)
+#project(pyeccodes)
 
 find_package(pybind11 REQUIRED)
 
-pybind11_add_module(nuwe_pyeccodes nuwe_pyeccodes.cpp)
+pybind11_add_module(_pyeccodes nuwe_pyeccodes.cpp)
+
+set(PYECCODES_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/nuwe_pyeccodes)
 
 configure_file (
-	"${PROJECT_SOURCE_DIR}/setup.py.in"
-    "${PROJECT_BINARY_DIR}/setup.py"
+	"${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in"
+    "${CMAKE_CURRENT_BINARY_DIR}/setup.py"
 )
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/nuwe_pyeccodes DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-target_link_libraries(nuwe_pyeccodes PUBLIC
+target_link_libraries(_pyeccodes PUBLIC
 	NuwePyeccodes::grib_message_handler
 )
 
-set_target_properties(nuwe_pyeccodes PROPERTIES
-	RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
-	LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
-	ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
+set_target_properties(_pyeccodes PROPERTIES
+	RUNTIME_OUTPUT_DIRECTORY_DEBUG ${PYECCODES_OUTPUT_DIRECTORY}
+	RUNTIME_OUTPUT_DIRECTORY_Release ${PYECCODES_OUTPUT_DIRECTORY}
+	LIBRARY_OUTPUT_DIRECTORY_DEBUG ${PYECCODES_OUTPUT_DIRECTORY}
+	LIBRARY_OUTPUT_DIRECTORY_Release ${PYECCODES_OUTPUT_DIRECTORY}
+	ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${PYECCODES_OUTPUT_DIRECTORY}
+	ARCHIVE_OUTPUT_DIRECTORY_Release ${PYECCODES_OUTPUT_DIRECTORY}
 )
