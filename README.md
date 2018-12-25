@@ -6,7 +6,6 @@ ecCodes by ECMWF has its own python binding which only supports python 2 and is 
 
 `nuwe-pyeccodes` provides some simple methods to process GRIB2 data based on ecCodes and supports both python 2 and python 3.
 
-
 ## Requirments
 
 ### ecCodes
@@ -24,6 +23,8 @@ Download the latest pybind11 and build with CMake.
 ## Building
 
 Use CMake to build from source code.
+
+Add `pybind11` and `ecCodes` cmake module path to `CMAKE_PREFIX_PATH`.
 
 Some Cmake variables are availabel to help find required libraries on Windows.
 
