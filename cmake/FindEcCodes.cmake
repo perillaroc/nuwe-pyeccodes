@@ -36,21 +36,28 @@ if(WIN32 AND (NOT CYGWIN))
         NO_DEFAULT_PATH
 	)
 else()
-    find_package(eccodes REQUIRED CONFIG)
-#    message("ECCODES_INCLUDE_DIRS ${ECCODES_INCLUDE_DIRS}")
-#    message("ECCODES_TPL_LIBRARIES ${ECCODES_TPL_LIBRARIES}")
-#    message("ECCODES_SELF_INCLUDE_DIRS ${ECCODES_SELF_INCLUDE_DIRS}")
+    find_package(
+        eccodes 
+        REQUIRED
+        CONFIG
+    )
+    #message("ECCODES_INCLUDE_DIRS ${ECCODES_INCLUDE_DIRS}")
+    #message("ECCODES_TPL_LIBRARIES ${ECCODES_TPL_LIBRARIES}")
+    #message("ECCODES_SELF_INCLUDE_DIRS ${ECCODES_SELF_INCLUDE_DIRS}")
 
-    set(EcCodes_INCLUDE_DIR ${ECCODES_INCLUDE_DIRS})
+    list (GET ECCODES_INCLUDE_DIRS 0 EcCodes_INCLUDE_DIR)
     set(EcCodes_LINK_LIBRARIES ${ECCODES_TPL_LIBRARIES})
+
+    #message("EcCodes_INCLUDE_DIR ${EcCodes_INCLUDE_DIR}")
 
 	find_library(
         EcCodes_LIBRARY
 		NAMES eccodes
-        PATHS "${ECCODES_SELF_INCLUDE_DIRS}/.."
+        PATHS "${EcCodes_INCLUDE_DIR}/.."
 		PATH_SUFFIXES lib
         NO_DEFAULT_PATH
-	)
+    )
+    #message("EcCodes_LIBRARY ${EcCodes_LIBRARY}")
 endif()
 
 include(FindPackageHandleStandardArgs)

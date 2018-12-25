@@ -5,7 +5,11 @@ set(SOURCE_FILES
 	src/grib_file_handler.cpp
 )
 
-add_library(grib_message_handler STATIC ${SOURCE_FILES})
+if(WIN32 AND (NOT CYGWIN))
+	add_library(grib_message_handler STATIC ${SOURCE_FILES})
+else()
+	add_library(grib_message_handler STATIC ${SOURCE_FILES})
+endif()
 
 
 target_include_directories(grib_message_handler 
