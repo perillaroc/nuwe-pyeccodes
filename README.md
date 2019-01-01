@@ -64,6 +64,6 @@ C++ Examples are in `example` directory.
 
 ## License
 
-Copyright &copy; 2018, Periilla Roc
+Copyright &copy; 2018-2019, Periilla Roc
 
 `nuwe-pyeccodes` is licensed under [The MIT License](./LICENSE.md).
