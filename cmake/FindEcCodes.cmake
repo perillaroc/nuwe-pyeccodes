@@ -1,4 +1,6 @@
-if(WIN32 AND (NOT CYGWIN))
+option(USE_ECCODES_CONDA "Using CONDA eccodes" OFF)
+
+if(WIN32 AND (NOT CYGWIN) AND (NOT USE_ECCODES_CONDA))
     option(USE_OPENJP "Using OpenJpeg" ON)
 
     if(USE_OPENJP)
