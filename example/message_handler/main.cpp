@@ -10,12 +10,17 @@ using namespace std;
 
 int main() {
 	string data_path = string(TEST_DATA_ROOT) + string("/t.grb2");
+	std::cout<<data_path<<std::endl;
 
 	auto file_handler = std::make_shared<GribFileHandler>();
+	
+	std::cout<<"file opening..."<<std::endl;
 	file_handler->openFile(data_path);
+	std::cout<<"file opening...Done"<<std::endl;
 	
 	std::unique_ptr<GribMessageHandler> h;
 	while (h = file_handler->next()) {
+		std::cout<<"get message"<<std::endl;
 		std::cout << h->getString("shortName") << std::endl;
 		std::cout << h->getLong("Ni") << std::endl;
 		std::cout << h->getDouble("level") << std::endl;
@@ -28,7 +33,9 @@ int main() {
 		std::cout << h->getString("shortName") << std::endl;
 	}
 
+	std::cout<<"file closing..."<<std::endl;
 	file_handler->closeFile();
+	std::cout<<"file closing...done"<<std::endl;
 
 	return 0;
 }
