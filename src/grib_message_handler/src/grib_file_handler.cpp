@@ -38,6 +38,11 @@ void pyeccodes::GribFileHandler::closeFile()
 	}
 }
 
+void pyeccodes::GribFileHandler::setFile(std::FILE* grib_file)
+{
+    grib_file_ = grib_file;
+}
+
 std::unique_ptr<GribMessageHandler> pyeccodes::GribFileHandler::next()
 {
 	int error = 0;

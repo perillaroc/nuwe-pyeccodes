@@ -18,13 +18,15 @@ public:
 	void openFile(const std::string &file_path);
 	void closeFile();
 
+    void setFile(std::FILE* grib_file);
+
 	std::unique_ptr<GribMessageHandler> next();
 
 
 private:
 	std::string data_file_path_;
 
-	FILE* grib_file_ = nullptr;
+	std::FILE* grib_file_ = nullptr;
 	codes_handle* grib_handle_ = nullptr;
 };
 }

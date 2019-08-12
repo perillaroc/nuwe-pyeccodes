@@ -1,23 +1,22 @@
-#project(grib_message_handler)
+add_library(grib_message_handler STATIC)
 
 set(SOURCE_FILES
 	src/grib_message_handler.cpp
 	src/grib_file_handler.cpp
 )
 
-if(WIN32 AND (NOT CYGWIN))
-	add_library(grib_message_handler STATIC ${SOURCE_FILES})
-else()
-	add_library(grib_message_handler STATIC ${SOURCE_FILES})
-endif()
-
+target_sources(grib_message_handler
+	PRIVATE
+	${SOURCE_FILES}
+	)
 
 target_include_directories(grib_message_handler 
 	INTERFACE
 		${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
-target_link_libraries(grib_message_handler PUBLIC
+target_link_libraries(grib_message_handler 
+	PUBLIC
 	EcCodes::EcCodes
 )
 
