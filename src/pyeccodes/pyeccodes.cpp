@@ -46,62 +46,99 @@ NUWE_THREAD_LOCAL int nuwe__crt_assert_enabled = FALSE;
 #endif
 
 namespace py = pybind11;
-using namespace pyeccodes;
+
+struct GribHandler {
+    pyeccodes::GribFileHandler* file_handler_ = nullptr;
+    std::unique_ptr<pyeccodes::GribMessageHandler> message_handler_;
+};
+
+GribHandler* codes_grib_new_from_file(py::object arg1) {
+    int fileDescriptor = PyObject_AsFileDescriptor(arg1.ptr());
+    if (fileDescriptor >= 0) {
+        auto infile = _fdopen(fileDescriptor, "rb");
+        if (infile == NULL) {
+            py::print("_fdopen failed");
+        }
+        auto file_handler = new pyeccodes::GribFileHandler;
+        file_handler->setFile(infile);
+
+        auto handler = new GribHandler;
+        handler->file_handler_ = file_handler;
+        handler->message_handler_ = file_handler->next();
+        return handler;
+    }
+    else {
+        throw std::invalid_argument("param must be a file");
+    }
+}
+
+std::string handler_get_string(GribHandler* handler, const std::string& key) {
+    return handler->message_handler_->getString(key);
+}
 
 PYBIND11_MODULE(_pyeccodes, m) {
-	py::class_<GribMessageHandler>(m, "GribMessageHandler")
-		.def(py::init<>())
-		.def("getSize", &GribMessageHandler::getSize)
-		.def("getLength", &GribMessageHandler::getLength)
-		.def("getString", &GribMessageHandler::getString)
-		.def("setString", &GribMessageHandler::setString)
-		.def("getLong", &GribMessageHandler::getLong)
-		.def("setLong", &GribMessageHandler::setLong)
-		.def("getDouble", &GribMessageHandler::getDouble)
-		.def("setDouble", &GribMessageHandler::setDouble)
-		.def("getDoubleArray", [](GribMessageHandler &message_handler, const std::string &key){
-			auto values = message_handler.getDoubleArray(key);
-			py::array_t<double> py_values(values.size());
-			py::buffer_info buffer = py_values.request();
-			double *buffer_pointer = (double*)buffer.ptr;
-			std::copy(values.begin(), values.end(), buffer_pointer);
-			return py_values;
-		})
-		.def("setDoubleArray", [](GribMessageHandler &message_handler, const std::string &key, py::array_t<double> array) {
-			py::buffer_info buffer = array.request();
-			auto size = buffer.size;
-			double* ptr = (double *)buffer.ptr;
-			std::vector<double> value_vector(size);
-			std::copy(ptr, ptr + size, value_vector.begin());
-			message_handler.setDoubleArray(key.c_str(), value_vector);
-		})
-		.def("writeMessage", &GribMessageHandler::witeMessage);
 
-	py::class_<GribFileHandler>(m, "GribFileHandler")
-		.def(py::init<>())
-		.def("openFile", &GribFileHandler::openFile)
-		.def("closeFile", &GribFileHandler::closeFile)
-        .def("handleNewFromFile", [](GribFileHandler& file_handler, py::object arg1) {
+    py::class_<pyeccodes::GribMessageHandler>(m, "GribMessageHandler")
+        .def(py::init<>())
+        .def("getSize", &pyeccodes::GribMessageHandler::getSize)
+        .def("getLength", &pyeccodes::GribMessageHandler::getLength)
+        .def("getString", &pyeccodes::GribMessageHandler::getString)
+        .def("setString", &pyeccodes::GribMessageHandler::setString)
+        .def("getLong", &pyeccodes::GribMessageHandler::getLong)
+        .def("setLong", &pyeccodes::GribMessageHandler::setLong)
+        .def("getDouble", &pyeccodes::GribMessageHandler::getDouble)
+        .def("setDouble", &pyeccodes::GribMessageHandler::setDouble)
+        .def("getDoubleArray", [](pyeccodes::GribMessageHandler& message_handler, const std::string& key) {
+        auto values = message_handler.getDoubleArray(key);
+        py::array_t<double> py_values(values.size());
+        py::buffer_info buffer = py_values.request();
+        double* buffer_pointer = (double*)buffer.ptr;
+        std::copy(values.begin(), values.end(), buffer_pointer);
+        return py_values;
+    })
+        .def("setDoubleArray", [](pyeccodes::GribMessageHandler& message_handler, const std::string& key, py::array_t<double> array) {
+        py::buffer_info buffer = array.request();
+        auto size = buffer.size;
+        double* ptr = (double*)buffer.ptr;
+        std::vector<double> value_vector(size);
+        std::copy(ptr, ptr + size, value_vector.begin());
+        message_handler.setDoubleArray(key.c_str(), value_vector);
+    })
+        .def("writeMessage", &pyeccodes::GribMessageHandler::witeMessage);
+
+    py::class_<pyeccodes::GribFileHandler>(m, "GribFileHandler")
+        .def(py::init<>())
+        .def("openFile", &pyeccodes::GribFileHandler::openFile)
+        .def("closeFile", &pyeccodes::GribFileHandler::closeFile)
+        .def("handleNewFromFile", [](pyeccodes::GribFileHandler& file_handler, py::object arg1) {
 #if defined(_DEBUG) && (defined(_MSC_VER) || defined(__MINGW64_VERSION_MAJOR))
-            _CrtSetReportHook(nuwe__crt_dbg_report_handler);
-            nuwe__crt_assert_enabled = FALSE;
+        nuwe__crt_assert_enabled = FALSE;
+        _CrtSetReportHook(nuwe__crt_dbg_report_handler);
 #endif
-            int fileDescriptor = PyObject_AsFileDescriptor(arg1.ptr());
-            py::print("fileDescriptor=", fileDescriptor);
-            if (fileDescriptor >= 0) {
-                
-                auto infile = _fdopen(fileDescriptor, "rb");
+        int fileDescriptor = PyObject_AsFileDescriptor(arg1.ptr());
+        py::print("fileDescriptor=", fileDescriptor);
+        if (fileDescriptor >= 0) {
 
-                if (infile == NULL) {
-                    py::print("_fdopen failed");
-                }
-                return file_handler.setFile(infile);
-            } else {
-                throw std::invalid_argument("param must be a file");
+            auto infile = _fdopen(fileDescriptor, "rb");
+
+            if (infile == NULL) {
+                py::print("_fdopen failed");
             }
+            return file_handler.setFile(infile);
+        }
+        else {
+            throw std::invalid_argument("param must be a file");
+        }
 #if defined(_DEBUG) && (defined(_MSC_VER) || defined(__MINGW64_VERSION_MAJOR))
-            nuwe__crt_assert_enabled = TRUE;
+        nuwe__crt_assert_enabled = TRUE;
 #endif
-        })
-		.def("next", &GribFileHandler::next);
+    })
+        .def("next", &pyeccodes::GribFileHandler::next);
+
+    py::class_<GribHandler>(m, "GribHandler")
+        .def(py::init<>());
+
+    m.def("codes_grib_new_from_file", codes_grib_new_from_file);
+
+    m.def("codes_get_string", handler_get_string);
 }
