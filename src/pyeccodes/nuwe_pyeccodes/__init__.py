@@ -22,3 +22,6 @@ def codes_get(h, key, key_type = None):
 		result = codes_get_string(h, key)
 	
 	return result
+
+def codes_release(h):
+	grib_handler_release(h)

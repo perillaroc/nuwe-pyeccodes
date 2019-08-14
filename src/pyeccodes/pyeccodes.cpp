@@ -70,13 +70,13 @@ PYBIND11_MODULE(_pyeccodes, m) {
             return py_values;
         })
         .def("setDoubleArray", [](pyeccodes::GribMessageHandler& message_handler, const std::string& key, py::array_t<double> array) {
-        py::buffer_info buffer = array.request();
-        auto size = buffer.size;
-        double* ptr = (double*)buffer.ptr;
-        std::vector<double> value_vector(size);
-        std::copy(ptr, ptr + size, value_vector.begin());
-        message_handler.setDoubleArray(key.c_str(), value_vector);
-    })
+            py::buffer_info buffer = array.request();
+            auto size = buffer.size;
+            double* ptr = (double*)buffer.ptr;
+            std::vector<double> value_vector(size);
+            std::copy(ptr, ptr + size, value_vector.begin());
+            message_handler.setDoubleArray(key.c_str(), value_vector);
+        })
         .def("writeMessage", &pyeccodes::GribMessageHandler::witeMessage);
 
     py::class_<pyeccodes::GribFileHandler>(m, "GribFileHandler")
@@ -85,31 +85,42 @@ PYBIND11_MODULE(_pyeccodes, m) {
         .def("closeFile", &pyeccodes::GribFileHandler::closeFile)
         .def("handleNewFromFile", [](pyeccodes::GribFileHandler& file_handler, py::object arg1) {
 #if defined(_DEBUG) && (defined(_MSC_VER) || defined(__MINGW64_VERSION_MAJOR))
-        nuwe__crt_assert_enabled = FALSE;
-        _CrtSetReportHook(nuwe__crt_dbg_report_handler);
+            nuwe__crt_assert_enabled = FALSE;
+            _CrtSetReportHook(nuwe__crt_dbg_report_handler);
 #endif
-        int fileDescriptor = PyObject_AsFileDescriptor(arg1.ptr());
-        py::print("fileDescriptor=", fileDescriptor);
-        if (fileDescriptor >= 0) {
+            int fileDescriptor = PyObject_AsFileDescriptor(arg1.ptr());
+            py::print("fileDescriptor=", fileDescriptor);
+            if (fileDescriptor >= 0) {
 
-            auto infile = _fdopen(fileDescriptor, "rb");
+                auto infile = _fdopen(fileDescriptor, "rb");
 
-            if (infile == NULL) {
-                py::print("_fdopen failed");
+                if (infile == NULL) {
+                    py::print("_fdopen failed");
+                }
+                return file_handler.setFile(infile);
             }
-            return file_handler.setFile(infile);
-        }
-        else {
-            throw std::invalid_argument("param must be a file");
-        }
+            else {
+                throw std::invalid_argument("param must be a file");
+            }
 #if defined(_DEBUG) && (defined(_MSC_VER) || defined(__MINGW64_VERSION_MAJOR))
-        nuwe__crt_assert_enabled = TRUE;
+            nuwe__crt_assert_enabled = TRUE;
 #endif
-    })
+        })
         .def("next", &pyeccodes::GribFileHandler::next);
 
     py::class_<pyeccodes::GribHandler>(m, "GribHandler")
         .def(py::init<>());
+
+    py::enum_<pyeccodes::GribKeyType>(m, "GribKeyType")
+        .value("Undefined", pyeccodes::GribKeyType::Undefined)
+        .value("Long", pyeccodes::GribKeyType::Long)
+        .value("Double", pyeccodes::GribKeyType::Double)
+        .value("String", pyeccodes::GribKeyType::String)
+        .value("Bytes", pyeccodes::GribKeyType::Bytes)
+        .value("Section", pyeccodes::GribKeyType::Section)
+        .value("Label", pyeccodes::GribKeyType::Label)
+        .value("Missing", pyeccodes::GribKeyType::Missing)
+        .export_values();
 
     m.def("codes_grib_new_from_file", [](py::object arg1) {
         int fileDescriptor = PyObject_AsFileDescriptor(arg1.ptr());
@@ -123,18 +134,7 @@ PYBIND11_MODULE(_pyeccodes, m) {
         else {
             throw std::invalid_argument("param must be a file");
         }
-    });
-
-    py::enum_<pyeccodes::GribKeyType>(m, "GribKeyType")
-        .value("Undefined", pyeccodes::GribKeyType::Undefined)
-        .value("Long", pyeccodes::GribKeyType::Long)
-        .value("Double", pyeccodes::GribKeyType::Double)
-        .value("String", pyeccodes::GribKeyType::String)
-        .value("Bytes", pyeccodes::GribKeyType::Bytes)
-        .value("Section", pyeccodes::GribKeyType::Section)
-        .value("Label", pyeccodes::GribKeyType::Label)
-        .value("Missing", pyeccodes::GribKeyType::Missing)
-        .export_values();
+    }, py::return_value_policy::reference);
 
     m.def("codes_get_string", [](pyeccodes::GribHandler* handler, const std::string& key) {
         return handler->message_handler_->getString(key);
@@ -169,7 +169,7 @@ PYBIND11_MODULE(_pyeccodes, m) {
         return handler->message_handler_->getNativeType(key);
     });
 
-    m.def("codes_release", [](pyeccodes::GribHandler* handler) {
+    m.def("grib_handler_release", [](pyeccodes::GribHandler* handler) {
         delete handler;
         handler = nullptr;
     });

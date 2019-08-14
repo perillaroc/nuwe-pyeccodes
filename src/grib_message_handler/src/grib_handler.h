@@ -5,6 +5,8 @@ namespace pyeccodes {
 
 class GribHandler {
 public:
+    ~GribHandler();
+
     GribFileHandler* file_handler_ = nullptr;
     std::unique_ptr<GribMessageHandler> message_handler_;
 };

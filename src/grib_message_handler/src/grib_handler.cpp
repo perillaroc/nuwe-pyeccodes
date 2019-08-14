@@ -1,6 +1,13 @@
 #include "grib_handler.h"
+#include <iostream>
 
 namespace pyeccodes {
+
+GribHandler::~GribHandler()
+{
+    std::cout << "~GribHandler()" << std::endl;
+}
+
 GribHandler* codes_grib_new_from_file(std::FILE* file)
 {
     auto file_handler = new pyeccodes::GribFileHandler;
