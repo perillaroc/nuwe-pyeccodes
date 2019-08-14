@@ -75,6 +75,13 @@ void GribMessageHandler::setDoubleArray(const std::string& key, std::vector<doub
     auto error = codes_set_double_array(grib_handle_, key.c_str(), values.data(), values.size());
 }
 
+GribKeyType GribMessageHandler::getNativeType(const std::string& key)
+{
+    int type = GribKeyType::Undefined;
+    grib_get_native_type(grib_handle_, key.c_str(), &type);
+    return GribKeyType(type);
+}
+
 void GribMessageHandler::witeMessage(const std::string& file_path, const std::string& file_mode)
 {
     codes_write_message(grib_handle_, file_path.c_str(), file_mode.c_str());

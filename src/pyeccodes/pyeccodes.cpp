@@ -5,6 +5,7 @@
 
 #include <grib_message_handler.h>
 #include <grib_file_handler.h>
+#include <grib_handler.h>
 
 #ifdef _MSC_VER
 # define NUWE_THREAD_LOCAL __declspec( thread )
@@ -47,34 +48,6 @@ NUWE_THREAD_LOCAL int nuwe__crt_assert_enabled = FALSE;
 
 namespace py = pybind11;
 
-struct GribHandler {
-    pyeccodes::GribFileHandler* file_handler_ = nullptr;
-    std::unique_ptr<pyeccodes::GribMessageHandler> message_handler_;
-};
-
-GribHandler* codes_grib_new_from_file(py::object arg1) {
-    int fileDescriptor = PyObject_AsFileDescriptor(arg1.ptr());
-    if (fileDescriptor >= 0) {
-        auto infile = _fdopen(fileDescriptor, "rb");
-        if (infile == NULL) {
-            py::print("_fdopen failed");
-        }
-        auto file_handler = new pyeccodes::GribFileHandler;
-        file_handler->setFile(infile);
-
-        auto handler = new GribHandler;
-        handler->file_handler_ = file_handler;
-        handler->message_handler_ = file_handler->next();
-        return handler;
-    }
-    else {
-        throw std::invalid_argument("param must be a file");
-    }
-}
-
-std::string handler_get_string(GribHandler* handler, const std::string& key) {
-    return handler->message_handler_->getString(key);
-}
 
 PYBIND11_MODULE(_pyeccodes, m) {
 
@@ -89,13 +62,13 @@ PYBIND11_MODULE(_pyeccodes, m) {
         .def("getDouble", &pyeccodes::GribMessageHandler::getDouble)
         .def("setDouble", &pyeccodes::GribMessageHandler::setDouble)
         .def("getDoubleArray", [](pyeccodes::GribMessageHandler& message_handler, const std::string& key) {
-        auto values = message_handler.getDoubleArray(key);
-        py::array_t<double> py_values(values.size());
-        py::buffer_info buffer = py_values.request();
-        double* buffer_pointer = (double*)buffer.ptr;
-        std::copy(values.begin(), values.end(), buffer_pointer);
-        return py_values;
-    })
+            auto values = message_handler.getDoubleArray(key);
+            py::array_t<double> py_values(values.size());
+            py::buffer_info buffer = py_values.request();
+            double* buffer_pointer = (double*)buffer.ptr;
+            std::copy(values.begin(), values.end(), buffer_pointer);
+            return py_values;
+        })
         .def("setDoubleArray", [](pyeccodes::GribMessageHandler& message_handler, const std::string& key, py::array_t<double> array) {
         py::buffer_info buffer = array.request();
         auto size = buffer.size;
@@ -135,10 +108,69 @@ PYBIND11_MODULE(_pyeccodes, m) {
     })
         .def("next", &pyeccodes::GribFileHandler::next);
 
-    py::class_<GribHandler>(m, "GribHandler")
+    py::class_<pyeccodes::GribHandler>(m, "GribHandler")
         .def(py::init<>());
 
-    m.def("codes_grib_new_from_file", codes_grib_new_from_file);
+    m.def("codes_grib_new_from_file", [](py::object arg1) {
+        int fileDescriptor = PyObject_AsFileDescriptor(arg1.ptr());
+        if (fileDescriptor >= 0) {
+            auto infile = _fdopen(fileDescriptor, "rb");
+            if (infile == NULL) {
+                py::print("_fdopen failed");
+            }
+            return pyeccodes::codes_grib_new_from_file(infile);
+    }
+        else {
+            throw std::invalid_argument("param must be a file");
+        }
+    });
 
-    m.def("codes_get_string", handler_get_string);
+    py::enum_<pyeccodes::GribKeyType>(m, "GribKeyType")
+        .value("Undefined", pyeccodes::GribKeyType::Undefined)
+        .value("Long", pyeccodes::GribKeyType::Long)
+        .value("Double", pyeccodes::GribKeyType::Double)
+        .value("String", pyeccodes::GribKeyType::String)
+        .value("Bytes", pyeccodes::GribKeyType::Bytes)
+        .value("Section", pyeccodes::GribKeyType::Section)
+        .value("Label", pyeccodes::GribKeyType::Label)
+        .value("Missing", pyeccodes::GribKeyType::Missing)
+        .export_values();
+
+    m.def("codes_get_string", [](pyeccodes::GribHandler* handler, const std::string& key) {
+        return handler->message_handler_->getString(key);
+    });
+
+    m.def("codes_get_long", [](pyeccodes::GribHandler* handler, const std::string& key) {
+        return handler->message_handler_->getLong(key);
+    });
+
+    m.def("codes_get_double", [](pyeccodes::GribHandler* handler, const std::string& key) {
+        return handler->message_handler_->getDouble(key);
+    });
+
+    m.def("codes_get_size", [](pyeccodes::GribHandler* handler, const std::string& key) {
+        return handler->message_handler_->getSize(key);
+    });
+
+    m.def("codes_get_length", [](pyeccodes::GribHandler* handler, const std::string& key) {
+        return handler->message_handler_->getLength(key);
+    });
+
+    m.def("codes_get_double_array", [](pyeccodes::GribHandler* handler, const std::string& key) {
+        auto values = handler->message_handler_->getDoubleArray(key);
+        py::array_t<double> py_values(values.size());
+        py::buffer_info buffer = py_values.request();
+        double* buffer_pointer = (double*)buffer.ptr;
+        std::copy(values.begin(), values.end(), buffer_pointer);
+        return py_values;
+    });
+
+    m.def("get_native_type", [](pyeccodes::GribHandler* handler, const std::string& key) {
+        return handler->message_handler_->getNativeType(key);
+    });
+
+    m.def("codes_release", [](pyeccodes::GribHandler* handler) {
+        delete handler;
+        handler = nullptr;
+    });
 }

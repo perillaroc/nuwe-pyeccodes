@@ -3,6 +3,7 @@ add_library(grib_message_handler STATIC)
 set(SOURCE_FILES
 	src/grib_message_handler.cpp
 	src/grib_file_handler.cpp
+	src/grib_handler.cpp
 )
 
 target_sources(grib_message_handler

@@ -7,6 +7,17 @@ struct grib_handle;
 
 namespace pyeccodes {
 
+enum GribKeyType {
+    Undefined = 0,
+    Long = 1,
+    Double = 2,
+    String = 3,
+    Bytes = 4,
+    Section = 5,
+    Label = 6,
+    Missing = 7
+};
+
 class GribMessageHandler
 {
 public:
@@ -28,6 +39,8 @@ public:
 
 	std::vector<double> getDoubleArray(const std::string &key);
 	void setDoubleArray(const std::string &key, std::vector<double> &values);
+
+    GribKeyType getNativeType(const std::string& key);
 
 	void witeMessage(const std::string &file_path, const std::string &file_mode);
 
