@@ -1,8 +1,9 @@
 #pragma once
 
-#include <eccodes.h>
 #include <string>
 #include <vector>
+
+struct grib_handle;
 
 namespace pyeccodes {
 
@@ -11,7 +12,7 @@ class GribMessageHandler
 public:
 	GribMessageHandler();
 
-	void setHandle(codes_handle* handle);
+	void setHandle(grib_handle* handle);
 
 	std::string getString(const std::string &key);
 	void setString(const std::string &key, const std::string &value);
@@ -31,6 +32,6 @@ public:
 	void witeMessage(const std::string &file_path, const std::string &file_mode);
 
 private:
-	codes_handle* grib_handle_ = nullptr;
+    grib_handle* grib_handle_ = nullptr;
 };
-}
+} // namespace pyeccodes

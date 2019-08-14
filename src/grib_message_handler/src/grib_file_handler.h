@@ -1,8 +1,6 @@
 #pragma once
 
-#include <string>
 #include <memory>
-#include <eccodes.h>
 
 #include "grib_message_handler.h"
 
@@ -27,6 +25,6 @@ private:
 	std::string data_file_path_;
 
 	std::FILE* grib_file_ = nullptr;
-	codes_handle* grib_handle_ = nullptr;
+    grib_handle* grib_handle_ = nullptr;
 };
-}
+} // namespace pyeccodes
