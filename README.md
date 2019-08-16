@@ -4,7 +4,7 @@ A python binding for ecCodes for python in Windows.
 
 ecCodes by ECMWF has its own python binding which only supports python 2 and is not available on Windows.
 
-`nuwe-pyeccodes` provides some simple methods to process GRIB2 data based on ecCodes and supports both python 2 and python 3.
+`nuwe-pyeccodes` provides some simple methods to process GRIB2 data based on ecCodes and supports python 3 (python 2 is not supported currently).
 
 ## Requirments
 
@@ -12,13 +12,11 @@ ecCodes by ECMWF has its own python binding which only supports python 2 and is 
 
 Install ecCodes using CMake in Linux or Visual Studio on Windows.
 
-Use OpenJPEG as the JPEG decoder on Windows.
+It is recommended to build under anaconda on Windows.
 
 ### pybind11 and python
 
 Choose a python distribution (official Python or Anaconda Python) and install `pybind11` package.
-
-Download the latest pybind11 and build with CMake.
 
 ## Building
 
@@ -26,13 +24,17 @@ Use CMake to build from source code.
 
 Add `pybind11` and `ecCodes` cmake module path to `CMAKE_PREFIX_PATH`.
 
-Some Cmake variables are availabel to help find required libraries on Windows.
+If you aren't using anaconda on Windows, some Cmake variables are availabel to help find required libraries.
 
 - `OPENJP_INSTALL_PREFIX`: OpenJPEG install prefix.
 - `EcCodes_INCLUDE_DIR`: ecCodes include directory.
 - `EcCodes_LIBRARY_DIR`: ecCodes library directory.
 
 ## Getting Started
+
+`nuwe-pyeccodes` supports two kind of APIs: handler classes and ecCodes functions.
+
+### Handler Classes
 
 ```py
 import nuwe_pyeccodes
@@ -56,6 +58,34 @@ while True:
     print(values[0])
 
 grib_file_handler.closeFile()
+```
+
+### ecCodes Functions
+
+Some `eccodes-python` functions is supported. Such as:
+
+- `codes_grib_new_from_file`
+- `codes_release`
+- `codes_get`
+- `codes_get_long`
+- `codes_get_double`
+- `codes_get_string`
+- `codes_get_size`
+- `codes_get_length`
+- `codes_get_double_array`
+
+The API is the same as `eccodes`, so just one import line needs to be changed.
+
+From 
+
+```py
+from eccodes import *
+```
+
+To
+
+```py
+from nuwe_pyeccodes import *
 ```
 
 ## Example
