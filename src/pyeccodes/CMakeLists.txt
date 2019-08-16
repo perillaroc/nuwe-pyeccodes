@@ -14,6 +14,7 @@ configure_file (
 	"${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in"
     "${CMAKE_CURRENT_BINARY_DIR}/setup.py"
 )
+
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/nuwe_pyeccodes 
 	DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 

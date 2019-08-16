@@ -12,7 +12,7 @@ ecCodes by ECMWF has its own python binding which only supports python 2 and is 
 
 Install ecCodes using CMake in Linux or Visual Studio on Windows.
 
-It is recommended to build under anaconda on Windows.
+It is recommended to build under anaconda on Windows (Enable `USE_ECCODES_CONDA` option for CMake).
 
 ### pybind11 and python
 

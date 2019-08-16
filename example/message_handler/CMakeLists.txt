@@ -1,4 +1,4 @@
-#project(example_message_handler)
+project(example_message_handler)
 
 set(TEST_DATA_ROOT ${NUWE_DATA_ROOT})
 
@@ -7,12 +7,19 @@ configure_file (
     "${CMAKE_CURRENT_BINARY_DIR}/example_config.h"
 )
 
-add_executable(example_message_handler main.cpp)
+add_executable(example_message_handler)
 
-target_link_libraries(example_message_handler PUBLIC
-	NuwePyeccodes::grib_message_handler
+target_sources(example_message_handler
+	PRIVATE
+		main.cpp
 )
 
-target_include_directories(example_message_handler PUBLIC
-	${CMAKE_CURRENT_BINARY_DIR}
+target_link_libraries(example_message_handler 
+	PUBLIC
+		NuwePyeccodes::grib_message_handler
+)
+
+target_include_directories(example_message_handler 
+	PUBLIC
+		${CMAKE_CURRENT_BINARY_DIR}
 )

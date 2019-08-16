@@ -8,7 +8,7 @@ set(SOURCE_FILES
 
 target_sources(grib_message_handler
 	PRIVATE
-	${SOURCE_FILES}
+		${SOURCE_FILES}
 	)
 
 target_include_directories(grib_message_handler 
@@ -18,7 +18,7 @@ target_include_directories(grib_message_handler
 
 target_link_libraries(grib_message_handler 
 	PUBLIC
-	EcCodes::EcCodes
+		EcCodes::EcCodes
 )
 
 add_library(NuwePyeccodes::grib_message_handler ALIAS grib_message_handler)
