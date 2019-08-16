@@ -2,7 +2,11 @@
 
 find_package(pybind11 REQUIRED)
 
-pybind11_add_module(_pyeccodes pyeccodes.cpp)
+pybind11_add_module(_pyeccodes 
+	pyeccodes.cpp 
+	eccodes_function.cpp
+	handler_class.cpp
+)
 
 set(PYECCODES_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/nuwe_pyeccodes)
 
@@ -10,7 +14,8 @@ configure_file (
 	"${CMAKE_CURRENT_SOURCE_DIR}/setup.py.in"
     "${CMAKE_CURRENT_BINARY_DIR}/setup.py"
 )
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/nuwe_pyeccodes DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/nuwe_pyeccodes 
+	DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 target_link_libraries(_pyeccodes PUBLIC
 	NuwePyeccodes::grib_message_handler
