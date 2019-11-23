@@ -2,7 +2,7 @@
 
 A python binding for ecCodes for python in Windows.
 
-~~ecCodes by ECMWF has its own python binding which only supports python 2 and s not available on Windows.~~ The new eccodes package on conda-forge can be used in python 3 and windows, and also supports JPEG packing. **So, please use the official python binding.**
+~~ecCodes by ECMWF has its own python binding which only supports python 2 and s not available on Windows.~~ The new eccodes-python package on conda-forge can be used in python 3 and windows, and also supports JPEG packing. But it seems to has some problem currently. So, please try to use the official python binding first, and turn to this project if it is not working.
 
 `nuwe-pyeccodes` provides some simple methods to process GRIB2 data based on ecCodes and supports python 3 (python 2 is not supported currently).
 
